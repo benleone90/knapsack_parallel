@@ -1,10 +1,7 @@
 CC=gcc
 
-default: main.o kp_dynamic.o kp_naive.o generator.o
-	$(CC) main.o kp_dynamic.o kp_naive.o generator.o -o knapsack.out
-
-generator.o: generator.c generator.h
-	$(CC) -c generator.c
+default: main.o kp_dynamic.o kp_naive.o
+	$(CC) main.o kp_dynamic.o kp_naive.o -o knapsack.out
 
 kp_naive.o: kp_naive.c kp_naive.h
 	$(CC) -c kp_naive.c
