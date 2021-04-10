@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "main.h"
+#include "knapsack.h"
 
 int main(int argc, char *argv[])
 {
@@ -43,7 +43,6 @@ int main(int argc, char *argv[])
 
 list_ptr new_list(int length)
 {
-    int i;
     list_ptr result = (list_ptr)malloc(sizeof(list));
     if (!result)
     {
