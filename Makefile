@@ -1,5 +1,5 @@
 CC=gcc
-FLAGS=-Wall
+FLAGS=-Wall -O1 -fopenmp
 
 default: knapsack.c knapsack.h
 	$(CC) $(FLAGS) knapsack.c knapsack.h -o knapsack.out

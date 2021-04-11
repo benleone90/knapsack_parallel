@@ -1,19 +1,23 @@
+#ifndef MAIN_H
+#define MAIN_H
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <omp.h>
 
 /* Macro definitions */
 #define CPNS 3.0
-#define OPTIONS 2
+#define OPTIONS 3
 #define A 1
-#define B 1
+#define B 5
 #define C 10
-#define NUM_TESTS 10
+#define NUM_TESTS 15
 #define MINW 1
 #define MAXW 100
 #define MINV 2
 #define MAXV 200
 #define WEIGHT 50
+#define THREADS 4
 
 typedef struct
 {
@@ -47,8 +51,51 @@ double interval(struct timespec start, struct timespec end)
     return (((double)temp.tv_sec) + ((double)temp.tv_nsec) * 1.0e-9);
 }
 
+/* Utility function to return the max of two integers */
+int max(int a, int b)
+{
+    return (a > b) ? a : b;
+}
+
+void detect_threads_setting()
+{
+    int i, ognt;
+
+    /* Find out how many threads OpenMP thinks it is wants to use */
+#pragma omp parallel for
+    for (i = 0; i < 1; i++)
+    {
+        ognt = omp_get_num_threads();
+    }
+
+    printf("omp's default number of threads is %d\n", ognt);
+
+    /* If this is illegal (0 or less), default to the "#define THREADS"
+     value that is defined above */
+    if (ognt <= 0)
+    {
+        if (THREADS != ognt)
+        {
+            printf("Overriding with #define THREADS value %d\n", THREADS);
+            ognt = THREADS;
+        }
+    }
+
+    omp_set_num_threads(ognt);
+
+    /* Once again ask OpenMP how many threads it is going to use */
+#pragma omp parallel for
+    for (i = 0; i < 1; i++)
+    {
+        ognt = omp_get_num_threads();
+    }
+    printf("Using %d threads for OpenMP\n", ognt);
+}
+
 list_ptr new_list(int length);
 int init_list(list_ptr lp, int length);
-int max(int a, int b);
 int knapsack_naive(int W, list_ptr lp, int n);
 int knapsack_dynamic(int W, list_ptr lp, int n);
+int knapsack_dynamic_omp(int W, list_ptr lp, int n);
+
+#endif
