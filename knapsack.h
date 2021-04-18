@@ -23,8 +23,6 @@ typedef struct
 {
     int *weight;
     int *value;
-    int length;
-
 } list, *list_ptr;
 
 /************* Time measurement by clock_gettime() *************/

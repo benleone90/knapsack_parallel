@@ -52,14 +52,14 @@ int main(int argc, char *argv[])
         clock_gettime(CLOCK_REALTIME, &time_stop);
         time_stamp[OPTION][x] = interval(time_start, time_stop);
     }
-    printf("size, naive time(ms), dynamic time(ms), dynamic omp time(ms)\n");
+    printf("size, naive(ms), dynamic(ms), dynamic omp(ms)\n");
     {
         for (i = 0; i < NUM_TESTS; i++)
         {
             printf("%4d", A * i * i + B * i + C);
             for (OPTION = 0; OPTION < OPTIONS; OPTION++)
             {
-                printf(", %14.4g", time_stamp[OPTION][i] * 1000);
+                printf(", %10.4g", time_stamp[OPTION][i] * 1000);
             }
             printf("\n");
         }
@@ -102,7 +102,6 @@ int init_list(list_ptr lp, int length)
     srand(123);
     if (length > 0)
     {
-        lp->length = length;
         for (i = 0; i < length; i++)
         {
             srand(i);
@@ -179,22 +178,24 @@ int knapsack_dynamic_omp(int W, list_ptr lp, int n)
 
     // Build table K[][] in bottom up manner
 #pragma omp parallel
-    for (i = 0; i <= n; i++)
     {
-#pragma omp for
-        for (w = 0; w <= W; w++)
+        for (i = 0; i <= n; i++)
         {
-            if (i == 0 || w == 0)
+#pragma omp for
+            for (w = 0; w <= W; w++)
             {
-                K[i][w] = 0;
-            }
-            else if (lp->weight[i - 1] <= w)
-            {
-                K[i][w] = max(lp->value[i - 1] + K[i - 1][w - lp->weight[i - 1]], K[i - 1][w]);
-            }
-            else
-            {
-                K[i][w] = K[i - 1][w];
+                if (i == 0 || w == 0)
+                {
+                    K[i][w] = 0;
+                }
+                else if (lp->weight[i - 1] <= w)
+                {
+                    K[i][w] = max(lp->value[i - 1] + K[i - 1][w - lp->weight[i - 1]], K[i - 1][w]);
+                }
+                else
+                {
+                    K[i][w] = K[i - 1][w];
+                }
             }
         }
     }
