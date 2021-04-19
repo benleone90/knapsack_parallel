@@ -7,7 +7,7 @@
 
 /* Macro definitions */
 #define CPNS 3.0
-#define OPTIONS 3
+#define OPTIONS 4
 #define A 1
 #define B 5
 #define C 10
@@ -27,8 +27,8 @@ typedef struct
 
 /************* Time measurement by clock_gettime() *************/
 /*
-  As described in the clock_gettime manpage (type "man clock_gettime" at the
-  shell prompt), a "timespec" is a structure that looks like this:
+  As described in the clock_gettime manpage (type "man clock_gettime" at
+  the shell prompt), a "timespec" is a structure that looks like this:
  
     struct timespec {
         time_t   tv_sec;   // seconds
@@ -53,6 +53,30 @@ double interval(struct timespec start, struct timespec end)
 int max(int a, int b)
 {
     return (a > b) ? a : b;
+}
+
+int knapsack_rec(int W, list_ptr lp, int n, int **dp)
+{
+    if (n < 0)
+    {
+        return 0;
+    }
+
+    if (dp[n][W] != -1)
+    {
+        return dp[n][W];
+    }
+
+    if (lp->weight[n] > W)
+    {
+        dp[n][W] = knapsack_rec(W, lp, n - 1, dp);
+        return dp[n][W];
+    }
+    else
+    {
+        dp[n][W] = max(lp->value[n] + knapsack_rec(W - lp->weight[n], lp, n - 1, dp), knapsack_rec(W, lp, n - 1, dp));
+        return dp[n][W];
+    }
 }
 
 void detect_threads_setting()
@@ -93,6 +117,7 @@ void detect_threads_setting()
 list_ptr new_list(int length);
 int init_list(list_ptr lp, int length);
 int knapsack_naive(int W, list_ptr lp, int n);
+int knapsack_naive_mem(int W, list_ptr lp, int n);
 int knapsack_dynamic(int W, list_ptr lp, int n);
 int knapsack_dynamic_omp(int W, list_ptr lp, int n);
 

@@ -23,7 +23,19 @@ int main(int argc, char *argv[])
         printf("iter %d length = %d\n", x, n);
         init_list(list0, n);
         clock_gettime(CLOCK_REALTIME, &time_start);
-        printf("%d\n", knapsack_naive(WEIGHT, list0, n));
+        printf("Highest Value: %d\n", knapsack_naive(WEIGHT, list0, n));
+        clock_gettime(CLOCK_REALTIME, &time_stop);
+        time_stamp[OPTION][x] = interval(time_start, time_stop);
+    }
+
+    OPTION++;
+    printf("\nNaive Approach w/ Memorization\n");
+    for (x = 0; x < NUM_TESTS && (n = A * x * x + B * x + C, n <= alloc_size); x++)
+    {
+        printf("iter %d length = %d\n", x, n);
+        init_list(list0, n);
+        clock_gettime(CLOCK_REALTIME, &time_start);
+        printf("Highest Value: %d\n", knapsack_naive_mem(WEIGHT, list0, n));
         clock_gettime(CLOCK_REALTIME, &time_stop);
         time_stamp[OPTION][x] = interval(time_start, time_stop);
     }
@@ -35,7 +47,7 @@ int main(int argc, char *argv[])
         printf("iter %d length = %d\n", x, n);
         init_list(list0, n);
         clock_gettime(CLOCK_REALTIME, &time_start);
-        printf("%d\n", knapsack_dynamic(WEIGHT, list0, n));
+        printf("Highest Value: %d\n", knapsack_dynamic(WEIGHT, list0, n));
         clock_gettime(CLOCK_REALTIME, &time_stop);
         time_stamp[OPTION][x] = interval(time_start, time_stop);
     }
@@ -48,11 +60,11 @@ int main(int argc, char *argv[])
         printf("iter %d length = %d\n", x, n);
         init_list(list0, n);
         clock_gettime(CLOCK_REALTIME, &time_start);
-        printf("%d\n", knapsack_dynamic(WEIGHT, list0, n));
+        printf("Highest Value: %d\n", knapsack_dynamic(WEIGHT, list0, n));
         clock_gettime(CLOCK_REALTIME, &time_stop);
         time_stamp[OPTION][x] = interval(time_start, time_stop);
     }
-    printf("size, naive(ms), dynamic(ms), dynamic omp(ms)\n");
+    printf("size, naive(ms), naive_mem(ms), dynamic(ms), dynamic_omp(ms)\n");
     {
         for (i = 0; i < NUM_TESTS; i++)
         {
@@ -138,6 +150,28 @@ int knapsack_naive(int W, list_ptr lp, int n)
     {
         return max(lp->value[n - 1] + knapsack_naive(W - lp->weight[n - 1], lp, n - 1), knapsack_naive(W, lp, n - 1));
     }
+}
+
+/************* Naive approach w/ memorization to the O-1 Knapsack problem *************/
+int knapsack_naive_mem(int W, list_ptr lp, int n)
+{
+    int i, j;
+    int **dp;
+    dp = malloc(n * sizeof(int *));
+
+    for (i = 0; i < n; i++)
+    {
+        dp[i] = malloc((W + 1) * sizeof(int));
+    }
+
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < W + 1; j++)
+        {
+            dp[i][j] = -1;
+        }
+    }
+    return knapsack_rec(W, lp, n - 1, dp);
 }
 
 /************* Dynamic programming approach to the O-1 Knapsack problem *************/
