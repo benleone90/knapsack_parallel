@@ -14,5 +14,5 @@ Find the breakeven point for the other methods over the naive approach.
 
 ## References
 
-- [Knapsack Problem Wiki](https://en.wikipedia.org/wiki/Knapsack_problem)
-- [0-1 Knapsack Problem | DP-10](https://www.geeksforgeeks.org/0-1-knapsack-problem-dp-10/)
+- [Knapsack Problem Wikipedia](https://en.wikipedia.org/wiki/Knapsack_problem)
+- [GeeksforGeeks: 0-1 Knapsack Problem | DP-10](https://www.geeksforgeeks.org/0-1-knapsack-problem-dp-10/)

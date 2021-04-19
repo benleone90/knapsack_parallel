@@ -16,7 +16,7 @@
 #define MAXW 100
 #define MINV 2
 #define MAXV 200
-#define WEIGHT 50
+#define WEIGHT 30
 #define THREADS 4
 
 typedef struct

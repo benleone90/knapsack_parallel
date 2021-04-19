@@ -211,7 +211,7 @@ int knapsack_dynamic_omp(int W, list_ptr lp, int n)
     int K[n + 1][W + 1];
 
     // Build table K[][] in bottom up manner
-#pragma omp parallel
+#pragma omp parallel shared(K) private(i, w)
     {
         for (i = 0; i <= n; i++)
         {
