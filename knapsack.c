@@ -1,18 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
+#include <pthread.h>
 #include <time.h>
 #include "knapsack.h"
 
 int main(int argc, char *argv[])
 {
     int OPTION;
+    int ids[NUM_THREADS];
+    pthread_t thread[NUM_THREADS];
     struct timespec time_start, time_stop;
     float time_stamp[OPTIONS][NUM_TESTS];
     int i, n, x, alloc_size;
 
     x = NUM_TESTS - 1;
     alloc_size = A * x * x + B * x + C;
+
+    for (i = 0; i < NUM_THREADS; i++)
+    {
+        ids[i] = i;
+        pthread_create(&thread[i], NULL, knapsack_dynamic_pthreads, NULL);
+    }
 
     list_ptr list0 = new_list(alloc_size);
     printf("Knapsack Problem");
@@ -174,6 +183,30 @@ int knapsack_naive_mem(int W, list_ptr lp, int n)
     return knapsack_rec(W, lp, n - 1, dp);
 }
 
+int knapsack_rec(int W, list_ptr lp, int n, int **dp)
+{
+    if (n < 0)
+    {
+        return 0;
+    }
+
+    if (dp[n][W] != -1)
+    {
+        return dp[n][W];
+    }
+
+    if (lp->weight[n] > W)
+    {
+        dp[n][W] = knapsack_rec(W, lp, n - 1, dp);
+        return dp[n][W];
+    }
+    else
+    {
+        dp[n][W] = max(lp->value[n] + knapsack_rec(W - lp->weight[n], lp, n - 1, dp), knapsack_rec(W, lp, n - 1, dp));
+        return dp[n][W];
+    }
+}
+
 /************* Dynamic programming approach to the O-1 Knapsack problem *************/
 
 int knapsack_dynamic(int W, list_ptr lp, int n)
@@ -234,4 +267,37 @@ int knapsack_dynamic_omp(int W, list_ptr lp, int n)
         }
     }
     return K[n][W];
+}
+
+/************* Dynamic Programming with pthreads approach to the O-1 Knapsack problem *************/
+void knapsack_dynamic_pthreads(void *thread_data)
+{
+    int i, w, W, n;
+    list_ptr lp;
+    struct thread_data *t_data;
+    t_data = (struct thread_data *)thread_data;
+    W = t_data->W;
+    lp = t_data->lp;
+    n = t_data->n;
+    int K[n + 1][W + 1];
+
+    for (i = 0; i <= n; i++)
+    {
+        for (w = 0; w <= W; w++)
+        {
+            if (i == 0 || w == 0)
+            {
+                K[i][w] = 0;
+            }
+            else if (lp->weight[i - 1] <= w)
+            {
+                K[i][w] = max(lp->value[i - 1] + K[i - 1][w - lp->weight[i - 1]], K[i - 1][w]);
+            }
+            else
+            {
+                K[i][w] = K[i - 1][w];
+            }
+        }
+    }
+    pthread_exit(NULL);
 }
