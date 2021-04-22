@@ -16,7 +16,7 @@
 #define MAXW 100
 #define MINV 2
 #define MAXV 200
-#define WEIGHT 50
+#define WEIGHT 30
 #define NUM_THREADS 6
 
 typedef struct
@@ -84,6 +84,6 @@ int knapsack_naive_mem(int W, list_ptr lp, int n);
 int knapsack_rec(int W, list_ptr lp, int n, int **dp);
 int knapsack_dynamic(int W, list_ptr lp, int n);
 int knapsack_dynamic_omp(int W, list_ptr lp, int n);
-void knapsack_dynamic_pthreads(void *thread_data);
+void *knapsack_dynamic_pthreads(void *thread_data);
 
 #endif

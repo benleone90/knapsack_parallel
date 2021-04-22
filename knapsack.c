@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
         printf("iter %d length = %d\n", x, n);
         init_list(list0, n);
         clock_gettime(CLOCK_MONOTONIC, &time_start);
-        // printf("Highest Value: %d\n", pthread_init(WEIGHT, list0, n));
+        pthread_init(WEIGHT, list0, n);
         clock_gettime(CLOCK_MONOTONIC, &time_stop);
         time_stamp[OPTION][x] = interval(time_start, time_stop);
     }
@@ -154,8 +154,7 @@ int init_list(list_ptr lp, int length)
 
 void pthread_init(int W, list_ptr lp, int n)
 {
-    int i, t, rc;
-    int ids[NUM_THREADS];
+    int t, rc;
     pthread_t thread[NUM_THREADS];
     struct thread_data thread_data_array[NUM_THREADS];
     for (t = 0; t < NUM_THREADS; t++)
@@ -310,34 +309,35 @@ int knapsack_dynamic_omp(int W, list_ptr lp, int n)
 }
 
 /************* Dynamic Programming with pthreads approach to the O-1 Knapsack problem *************/
-void knapsack_dynamic_pthreads(void *thread_data)
+void *knapsack_dynamic_pthreads(void *thread_data)
 {
-    // int i, w, W, n;
-    // list_ptr lp;
-    // struct thread_data *t_data;
-    // t_data = (struct thread_data *)thread_data;
-    // W = t_data->W;
-    // lp = t_data->lp;
-    // n = t_data->n;
-    // int K[n + 1][W + 1];
+    int i, w, W, n;
+    list_ptr lp;
+    struct thread_data *t_data;
+    t_data = (struct thread_data *)thread_data;
+    W = t_data->W;
+    lp = t_data->lp;
+    n = t_data->n;
+    int K[n + 1][W + 1];
 
-    // for (i = 0; i <= n; i++)
-    // {
-    //     for (w = 0; w <= W; w++)
-    //     {
-    //         if (i == 0 || w == 0)
-    //         {
-    //             K[i][w] = 0;
-    //         }
-    //         else if (lp->weight[i - 1] <= w)
-    //         {
-    //             K[i][w] = max(lp->value[i - 1] + K[i - 1][w - lp->weight[i - 1]], K[i - 1][w]);
-    //         }
-    //         else
-    //         {
-    //             K[i][w] = K[i - 1][w];
-    //         }
-    //     }
-    // }
+    for (i = 0; i <= n; i++)
+    {
+        for (w = 0; w <= W; w++)
+        {
+            if (i == 0 || w == 0)
+            {
+                K[i][w] = 0;
+            }
+            else if (lp->weight[i - 1] <= w)
+            {
+                K[i][w] = max(lp->value[i - 1] + K[i - 1][w - lp->weight[i - 1]], K[i - 1][w]);
+            }
+            else
+            {
+                K[i][w] = K[i - 1][w];
+            }
+        }
+    }
+    printf("Highest Value: %d\n", K[n][W]);
     pthread_exit(NULL);
 }
