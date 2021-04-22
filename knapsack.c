@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
         printf("iter %d length = %d\n", x, n);
         init_list(list0, n);
         clock_gettime(CLOCK_MONOTONIC, &time_start);
-        printf("Highest Value: %d\n", knapsack_dynamic(WEIGHT, list0, n));
+        // printf("Highest Value: %d\n", pthread_init(WEIGHT, list0, n));
         clock_gettime(CLOCK_MONOTONIC, &time_stop);
         time_stamp[OPTION][x] = interval(time_start, time_stop);
     }
@@ -167,6 +167,15 @@ void pthread_init(int W, list_ptr lp, int n)
         if (rc)
         {
             printf("ERROR; return code from pthread_create() is %d\n", rc);
+            exit(-1);
+        }
+    }
+
+    for (t = 0; t < NUM_THREADS; t++)
+    {
+        if (pthread_join(thread[t], NULL))
+        {
+            printf("ERROR; code on return from join is %d\n", rc);
             exit(-1);
         }
     }
