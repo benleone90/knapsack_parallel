@@ -11,7 +11,7 @@
 #define A 1
 #define B 5
 #define C 10
-#define NUM_TESTS 15
+#define NUM_TESTS 25
 #define MINW 1
 #define MAXW 100
 #define MINV 2
