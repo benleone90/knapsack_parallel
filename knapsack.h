@@ -15,7 +15,7 @@
 #define MINW 1
 #define MAXW 100
 #define MINV 2
-#define MAXV 200
+#define MAXV 100
 #define WEIGHT 30
 #define NUM_THREADS 6
 
