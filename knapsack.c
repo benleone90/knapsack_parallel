@@ -15,12 +15,6 @@ int main(int argc, char *argv[])
     x = NUM_TESTS - 1;
     alloc_size = A * x * x + B * x + C;
 
-    // for (i = 0; i < NUM_THREADS; i++)
-    // {
-    //     ids[i] = i;
-    //     pthread_create(&thread[i], NULL, knapsack_dynamic_pthreads, NULL);
-    // }
-
     list_ptr list0 = new_list(alloc_size);
     printf("Knapsack Problem");
     OPTION = 0;
